@@ -53,6 +53,6 @@ struct FResource
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 ammo = 20000;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 ammo = 200;
 };
 
