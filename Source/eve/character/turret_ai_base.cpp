@@ -8,6 +8,7 @@
 #include "character/evecharacter.h"
 #include "gameframework/charactermovementcomponent.h"
 #include "kismet/kismetsystemlibrary.h"
+#include "components/capsulecomponent.h"
 #include "drawdebughelpers.h"
 
 Aturret_ai_base::Aturret_ai_base()
@@ -19,8 +20,11 @@ Aturret_ai_base::Aturret_ai_base()
 	}
 	turretBase = CreateDefaultSubobject<UStaticMeshComponent>("Turret Base Mesh");
 	turretBase->SetupAttachment(GetRootComponent());
+	turretBase->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	turretBarrel = CreateDefaultSubobject<UStaticMeshComponent>("Turret barrel Mesh");
 	turretBarrel->SetupAttachment(turretBase);
+	turretBarrel->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 
 }
@@ -35,6 +39,9 @@ void Aturret_ai_base::SetActive()
 	FTimerHandle t_search_th;
 	GetWorld()->GetTimerManager().SetTimer(t_search_th, this, &Aturret_ai_base::Search, SEARCH_TIME, true);
 	SetActorTickEnabled(true);
+	turretBase->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	turretBarrel->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 void Aturret_ai_base::Tick(float DeltaTime)
