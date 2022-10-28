@@ -6,9 +6,11 @@
 #include "gameframework/springarmcomponent.h"
 #include "gameframework/playercontroller.h"
 #include "kismet/gameplaystatics.h"
+#include "components/capsulecomponent.h"
 #include "drawdebughelpers.h"
 #include "lib.h"
 #include "objects/weapon.h"
+#include "character/turret_ai_base.h"
 #include "const.h"
 
 AevePlayer::AevePlayer()
@@ -48,6 +50,15 @@ void AevePlayer::Tick(float DeltaTime)
 			//SetActorRotation(lerp_rot);
 			m_controller->SetControlRotation(lerp_rot);
 		}
+		if (Ulib::Valid(m_placingObj)) {
+			GetWorld()->LineTraceSingleByChannel(hit, trace_start, trace_end, ECC_GameTraceChannel1);
+			if (hit.bBlockingHit) {
+				m_bPlacingObjLocationValid = 1;
+				FVector t_set_loc = hit.Location;
+				t_set_loc.Z += 0.5f * m_placingObj->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+				m_placingObj->SetActorLocation(t_set_loc);
+			} else 	m_bPlacingObjLocationValid = 0;
+		} else 	m_bPlacingObjLocationValid = 0;
 	}
 }
 
@@ -70,6 +81,17 @@ void AevePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void AevePlayer::StartShooting()
 {
+	if (Ulib::Valid(m_placingObj)) {
+		if (m_bPlacingObjLocationValid) {
+			m_placingObj->SetActive();
+			m_placingObj = nullptr;
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Invalid Turret Loc"));
+			Ulib::Destroy(m_placingObj);
+		}
+		return;
+	}
 	if (!m_weapPrimary)
 		return;
 	GetWorld()->GetTimerManager().SetTimer(m_shootTimerHandle, this, &AevePlayer::Shoot, 1 / m_weapPrimary->fireRate, true, 0.f);
@@ -84,4 +106,12 @@ void AevePlayer::OnDeath()
 {
 	Super::OnDeath();
 	//Ulib::Destroy(this);
+}
+void AevePlayer::SetPlacingObject(Aturret_ai_base* t_obj)
+{
+	if (!Ulib::Valid(t_obj))
+		return;
+	if (Ulib::Valid(m_placingObj))
+		UE_LOG(LogTemp, Warning, TEXT("Already placing a turret"));
+	m_placingObj = t_obj;
 }

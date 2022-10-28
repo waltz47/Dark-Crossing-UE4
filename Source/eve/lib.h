@@ -18,6 +18,7 @@ public:
 	static void Destroy(AActor* actor);
 	static void	SetActorNI(AActor* actor);
 	static void	SetActorI(AActor* actor);
+
 	static bool IsInfected(AActor* actor) {
 		return Ulib::Valid(actor) && actor->ActorHasTag(i_character_tag);
 	}
