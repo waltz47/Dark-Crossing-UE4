@@ -72,7 +72,7 @@ void AevePlayer::StartShooting()
 {
 	if (!m_weapPrimary)
 		return;
-	GetWorld()->GetTimerManager().SetTimer(m_shootTimerHandle, this, &AevePlayer::Shoot, 1 / m_weapPrimary->fireRate, true);
+	GetWorld()->GetTimerManager().SetTimer(m_shootTimerHandle, this, &AevePlayer::Shoot, 1 / m_weapPrimary->fireRate, true, 0.f);
 
 }
 
