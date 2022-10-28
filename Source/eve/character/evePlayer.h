@@ -9,6 +9,7 @@
 #define WEAPON_RANGE		20000.f
 
 class APlayerController;
+class Aturret_ai_base;
 UCLASS()
 class EVE_API AevePlayer : public AeveNICharacter
 {
@@ -16,6 +17,10 @@ class EVE_API AevePlayer : public AeveNICharacter
 private:
 	UPROPERTY()
 		APlayerController*							m_controller = nullptr;
+
+	UPROPERTY()
+		Aturret_ai_base*							m_placingObj = nullptr;
+	bool											m_bPlacingObjLocationValid = 0;
 
 protected:
 	virtual void BeginPlay() override;
@@ -32,6 +37,7 @@ public:
 	void StopShooting();
 	void StartShooting();
 	virtual void OnDeath();
+	UFUNCTION(BlueprintCallable) void SetPlacingObject(Aturret_ai_base* t_obj);
 
 	FTimerHandle m_shootTimerHandle;
 };

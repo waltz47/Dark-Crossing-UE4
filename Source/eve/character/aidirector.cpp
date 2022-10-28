@@ -19,18 +19,48 @@ Aaidirector::Aaidirector()
 void Aaidirector::BeginPlay()
 {
 	Super::BeginPlay();
+	NextWave();
 }
 
-void Aaidirector::Activate()
+void Aaidirector::NextWave()
 {
 	if (spawnPoints.Num() == 0)
 		return;
-	if(bAttackGroup)
-		squadToAttack = Ulib::GetAllNI(this);
-	GetWorld()->GetTimerManager().SetTimer(m_spawnTimerHandle, this, &Aaidirector::SpawnAI, spawnTimeDiff, true, 0.f);
-	if (bAttackGroup) {
-		GetWorld()->GetTimerManager().SetTimer(t_eval_timer, this, &Aaidirector::EvalAI, m_evalTime, true, 0.f);
+
+	/*Increase health / armor*/
+	m_currentWaveHealth += 10.f;
+	m_currentWaveArmor += 5.f;
+	if (m_currentWaveArmor > INF_ARMOR_CAP) {
+		m_currentWaveArmor = INF_ARMOR_CAP;
 	}
+	m_currentWaveDamage += 5.f;
+	if (m_currentWaveDamage > INF_DAMAGE_CAP) {
+		m_currentWaveDamage = INF_DAMAGE_CAP;
+	}
+
+	squadToAttack = Ulib::GetAllNI(this);
+	numInfected += 10;
+	maxSimActive += 5;
+	if (maxSimActive > INF_MAX_SIM_ACTIVE_CAP) {
+		maxSimActive = INF_MAX_SIM_ACTIVE_CAP;
+	}
+	if (numInfected > INF_CAP)
+		numInfected = INF_CAP;
+	m_currentWave++;
+	m_currentWaveKillCount = 0;
+	m_currentSpawned = 0;
+	m_top = 0;
+	m_infected.Empty();
+	squadToAttack.Empty();
+	
+	GetWorld()->GetTimerManager().SetTimer(t_next_wave_timer, this, &Aaidirector::WaveStart, waveCooldown, false);
+}
+void Aaidirector::WaveStart()
+{
+	squadToAttack = Ulib::GetAllNI(this);
+
+	GetWorld()->GetTimerManager().SetTimer(m_spawnTimerHandle, this, &Aaidirector::SpawnAI, spawnTimeDiff, true, 0.f);
+	GetWorld()->GetTimerManager().SetTimer(t_eval_timer, this, &Aaidirector::EvalAI, m_evalTime, true, 0.f);
 }
 void Aaidirector::SpawnAI()
 {
@@ -38,6 +68,7 @@ void Aaidirector::SpawnAI()
 		return;
 	if (m_currentSpawned >= numInfected) {
 		GetWorld()->GetTimerManager().ClearTimer(m_spawnTimerHandle);
+		m_bWaveOver = 1;
 		return;
 	}
 	if (m_top >= spawnPoints.Num())
@@ -49,6 +80,9 @@ void Aaidirector::SpawnAI()
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	AeveInfected* infected = Cast<AeveInfected>(GetWorld()->SpawnActor<ACharacter>(infectedClass[FMath::RandRange(0, infectedClass.Num() - 1)], spawn_loc, spawn_rot, spawnParams));
 	if (Ulib::Valid(infected)) {
+		infected->health = m_currentWaveHealth;
+		infected->armor = m_currentWaveArmor;
+		infected->damage = m_currentWaveDamage;
 		m_infected.Add(infected);
 		m_currentSpawned++;
 		m_top++;
@@ -58,7 +92,7 @@ void Aaidirector::EvalAI()
 {
 	int32 t_valid = 0;
 	for (AeveInfected* infected : m_infected) {
-		if (Ulib::Valid(infected)) {
+		if (Ulib::Valid(infected) && infected->IsDead() == false) {
 			t_valid++;
 			ACharacter* t_ctr = nullptr;
 			for (ACharacter* character : squadToAttack) {
@@ -74,9 +108,15 @@ void Aaidirector::EvalAI()
 				infected->SetInfectedState(INFECTED_STATE_CHASE);
 			}
 		}
+		else {
+			m_currentWaveKillCount++;
+		}
 	}
-	if (t_valid == 0) {
+	if (t_valid == 0 && m_bWaveOver) {
+		//wave over
 		StopEval();
+		m_overallSpawned += numInfected;
+		NextWave();
 		return;
 	}
 	if (t_valid > maxSimActive) {
