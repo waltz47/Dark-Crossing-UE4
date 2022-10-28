@@ -29,7 +29,6 @@ void Aweapon::BeginPlay()
 	if (!Ulib::Valid(m_owner))
 		return;
 	
-	
 }
 void Aweapon::ShootAt(AActor* actor)
 {
