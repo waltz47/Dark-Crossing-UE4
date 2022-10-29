@@ -8,6 +8,7 @@
 #include "character/evecharacter.h"
 #include "gameframework/charactermovementcomponent.h"
 #include "kismet/kismetsystemlibrary.h"
+#include "components/capsulecomponent.h"
 #include "drawdebughelpers.h"
 
 Aturret_ai_base::Aturret_ai_base()
@@ -17,10 +18,17 @@ Aturret_ai_base::Aturret_ai_base()
 	if (GetCharacterMovement()) {
 		GetCharacterMovement()->DisableMovement();
 	}
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	turretBase = CreateDefaultSubobject<UStaticMeshComponent>("Turret Base Mesh");
 	turretBase->SetupAttachment(GetRootComponent());
+	turretBase->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 	turretBarrel = CreateDefaultSubobject<UStaticMeshComponent>("Turret barrel Mesh");
 	turretBarrel->SetupAttachment(turretBase);
+	turretBarrel->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	muzzleComp = CreateDefaultSubobject<USceneComponent>("MuzzleComp");
+	muzzleComp->SetupAttachment(turretBarrel);
 
 
 }
@@ -35,6 +43,9 @@ void Aturret_ai_base::SetActive()
 	FTimerHandle t_search_th;
 	GetWorld()->GetTimerManager().SetTimer(t_search_th, this, &Aturret_ai_base::Search, SEARCH_TIME, true);
 	SetActorTickEnabled(true);
+	turretBase->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	turretBarrel->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 void Aturret_ai_base::Tick(float DeltaTime)
@@ -73,6 +84,11 @@ void Aturret_ai_base::Shoot()
 	if (ValidTarget()) {
 		DrawDebugLine(GetWorld(), GetActorLocation(), m_target->GetActorLocation(), FColor::Red, false, -1.f, 0, 1.f);
 		UGameplayStatics::ApplyDamage(m_target, damage, nullptr, this, UDamageType::StaticClass());
+		if (muzzleFlash) {
+			FVector location = muzzleComp->GetComponentLocation();
+			FRotator rotation = muzzleComp->GetComponentRotation();
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), muzzleFlash, location, rotation, FVector(3.f, 3.f, 3.f));
+		}
 	}
 }
 bool Aturret_ai_base::ValidTarget()

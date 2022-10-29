@@ -11,7 +11,10 @@
 #include "lib.h"
 #include "objects/weapon.h"
 #include "character/turret_ai_base.h"
+#include "character/evenicharacter.h"
+#include "kismet/kismetsystemlibrary.h"
 #include "const.h"
+#include "navigationsystem.h"
 
 AevePlayer::AevePlayer()
 {
@@ -50,15 +53,35 @@ void AevePlayer::Tick(float DeltaTime)
 			//SetActorRotation(lerp_rot);
 			m_controller->SetControlRotation(lerp_rot);
 		}
+		bool b_ok = 0;
 		if (Ulib::Valid(m_placingObj)) {
 			GetWorld()->LineTraceSingleByChannel(hit, trace_start, trace_end, ECC_GameTraceChannel1);
 			if (hit.bBlockingHit) {
 				m_bPlacingObjLocationValid = 1;
 				FVector t_set_loc = hit.Location;
 				t_set_loc.Z += 0.5f * m_placingObj->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-				m_placingObj->SetActorLocation(t_set_loc);
-			} else 	m_bPlacingObjLocationValid = 0;
-		} else 	m_bPlacingObjLocationValid = 0;
+
+				TArray<AActor*> t_actors;
+				TArray<TEnumAsByte<EObjectTypeQuery>> object_types;
+				object_types.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+				TArray<AActor*> IgnoredActors;
+				IgnoredActors.Add(m_placingObj);
+				UKismetSystemLibrary::SphereOverlapActors(GetWorld(), t_set_loc, 50.f, object_types, Aturret_ai_base::StaticClass(), IgnoredActors, t_actors);
+				bool b_overlap = 0;
+				for (AActor* actor : t_actors) {
+					if (Ulib::Valid(actor)) {
+						b_overlap = 1;
+						break;
+					}
+				}
+				if (!b_overlap) {
+					m_placingObj->SetActorLocation(t_set_loc);
+					b_ok = 1;
+				}
+				
+			}
+		}
+		m_bPlacingObjLocationValid = b_ok;
 	}
 }
 
@@ -105,6 +128,7 @@ void AevePlayer::StopShooting()
 void AevePlayer::OnDeath()
 {
 	Super::OnDeath();
+	PlayerOnDeath();
 	//Ulib::Destroy(this);
 }
 void AevePlayer::SetPlacingObject(Aturret_ai_base* t_obj)
@@ -114,4 +138,72 @@ void AevePlayer::SetPlacingObject(Aturret_ai_base* t_obj)
 	if (Ulib::Valid(m_placingObj))
 		UE_LOG(LogTemp, Warning, TEXT("Already placing a turret"));
 	m_placingObj = t_obj;
+}
+bool AevePlayer::BuyTurret()
+{
+	if (!turretClass)
+		return false;
+	if (!EnoughGold(turretCost))
+		return false;
+	FActorSpawnParameters t_spawnParams;
+	t_spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	Aturret_ai_base* t_turret = GetWorld()->SpawnActor<Aturret_ai_base>(turretClass, FVector(0.f, 0.f, 9990.f), FRotator::ZeroRotator, t_spawnParams);
+	if (Ulib::Valid(t_turret)) {
+		SetPlacingObject(t_turret);
+		return true;
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("eve player turret null spawn"));
+		Ulib::Destroy(t_turret);
+	}
+	return false;
+}
+bool AevePlayer::BuyAmmo()
+{
+	if (EnoughGold(ammoCost)) {
+		res.ammo += 100;
+	}
+	else {
+		return false;
+	}
+	return true;
+}
+bool AevePlayer::NewAlly()
+{
+	if (allyClass.Num() == 0)
+		return false;
+	if (!EnoughGold(allyCost)) {
+		return false;
+	}
+	FActorSpawnParameters t_spawnParams;
+	t_spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	FNavLocation t_nav;
+	UNavigationSystemV1* c_nav = UNavigationSystemV1::GetCurrent(this);
+	if (!c_nav) {
+		UE_LOG(LogTemp, Warning, TEXT("null nav system"));
+		playerGold += allyCost;
+		return false;
+	}
+	if (c_nav->GetRandomPointInNavigableRadius(GetActorLocation(), 2500.f, t_nav) == false) {
+		playerGold += allyCost;
+		UE_LOG(LogTemp, Warning, TEXT("no ally spawn point"));
+		return false;
+	}
+	FVector t_spawnLoc = t_nav.Location;
+	AeveNICharacter* t_ally = GetWorld()->SpawnActor<AeveNICharacter>(allyClass[FMath::RandRange(0, allyClass.Num() - 1)], t_spawnLoc, FRotator::ZeroRotator, t_spawnParams);
+	if (Ulib::Valid(t_ally)) {
+		UE_LOG(LogTemp, Warning, TEXT("ally spawned"));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("eve player ally null spawn"));
+		return false;
+	}
+	return true;
+}
+bool AevePlayer::BuyMediPack()
+{
+	if (!EnoughGold(medipackCost))
+		return false;
+	health = 100.f;
+	return true;
 }

@@ -12,6 +12,7 @@ class AeveInfected;
 #define INF_ARMOR_CAP			100
 #define INF_DAMAGE_CAP			80
 #define INF_MAX_SIM_ACTIVE_CAP	200 //max infected at a time
+#define KILL_MULTIPLIER			2
 UCLASS()
 class EVE_API Aaidirector : public AActor
 {
@@ -54,6 +55,7 @@ public:
 	float					m_currentWaveArmor = 10.f;
 	float					m_currentWaveDamage = 10.f;
 	bool					m_bWaveOver = 0;
+
 	UFUNCTION(BlueprintCallable) int32 GetTotalInfectedKilled() { return m_overallSpawned + m_currentWaveKillCount; }
 	UFUNCTION(BlueprintCallable) int32 GetCurrentWaveNum() { return m_currentWave; }
 	UFUNCTION(BlueprintCallable) float GetTimeToNextWave() {

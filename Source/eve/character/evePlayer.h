@@ -10,6 +10,7 @@
 
 class APlayerController;
 class Aturret_ai_base;
+class AeveNICharacter;
 UCLASS()
 class EVE_API AevePlayer : public AeveNICharacter
 {
@@ -29,15 +30,34 @@ public:
 	AevePlayer();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) class UCameraComponent* camera = nullptr;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) class USpringArmComponent* cameraBoom = nullptr;
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 playerGold = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 ammoCost = 20;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 medipackCost = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 turretCost = 40;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 allyCost = 50;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSubclassOf<Aturret_ai_base> turretClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) TArray<TSubclassOf<AeveNICharacter>> allyClass;
 
-	// Called to bind functionality to input
+
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void StopShooting();
 	void StartShooting();
 	virtual void OnDeath();
-	UFUNCTION(BlueprintCallable) void SetPlacingObject(Aturret_ai_base* t_obj);
-
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent) void PlayerOnDeath();
+	UFUNCTION(BlueprintCallable) int32 CurrentGold() { return playerGold; }
+	UFUNCTION(BlueprintCallable) bool EnoughGold(int32 t_need) {
+		if (playerGold >= t_need) {
+			playerGold -= t_need;
+			return true;
+		}
+		return false;
+	}
+	UFUNCTION(BlueprintCallable)	void SetPlacingObject(Aturret_ai_base* t_obj);
+	UFUNCTION(BlueprintCallable)	bool BuyTurret();
+	UFUNCTION(BlueprintCallable)	bool BuyAmmo();
+	UFUNCTION(BlueprintCallable)	bool NewAlly();
+	UFUNCTION(BlueprintCallable)	bool BuyMediPack();
+	UFUNCTION()						void AddGold(int32 t_g) { playerGold += t_g; }
 	FTimerHandle m_shootTimerHandle;
 };

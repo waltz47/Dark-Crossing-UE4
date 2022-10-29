@@ -6,6 +6,8 @@
 #include "lib.h"
 #include "const.h"
 #include "gameframework/character.h"
+#include "character/evePlayer.h"
+#include "kismet/gameplaystatics.h"
 
 // Sets default values
 Aaidirector::Aaidirector()
@@ -26,7 +28,13 @@ void Aaidirector::NextWave()
 {
 	if (spawnPoints.Num() == 0)
 		return;
-
+	
+	if (m_currentWave) {
+		AevePlayer* player = Cast<AevePlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+		if (Ulib::Valid(player)) {
+			player->AddGold(numInfected * KILL_MULTIPLIER);
+		}
+	}
 	/*Increase health / armor*/
 	m_currentWaveHealth += 10.f;
 	m_currentWaveArmor += 5.f;
@@ -91,6 +99,7 @@ void Aaidirector::SpawnAI()
 void Aaidirector::EvalAI()
 {
 	int32 t_valid = 0;
+	m_currentWaveKillCount = 0;
 	for (AeveInfected* infected : m_infected) {
 		if (Ulib::Valid(infected) && infected->IsDead() == false) {
 			t_valid++;
@@ -108,9 +117,7 @@ void Aaidirector::EvalAI()
 				infected->SetInfectedState(INFECTED_STATE_CHASE);
 			}
 		}
-		else {
-			m_currentWaveKillCount++;
-		}
+		else m_currentWaveKillCount++;
 	}
 	if (t_valid == 0 && m_bWaveOver) {
 		//wave over
