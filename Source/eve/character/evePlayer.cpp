@@ -128,6 +128,7 @@ void AevePlayer::StopShooting()
 void AevePlayer::OnDeath()
 {
 	Super::OnDeath();
+	PlayerOnDeath();
 	//Ulib::Destroy(this);
 }
 void AevePlayer::SetPlacingObject(Aturret_ai_base* t_obj)

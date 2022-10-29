@@ -44,6 +44,7 @@ public:
 	void StopShooting();
 	void StartShooting();
 	virtual void OnDeath();
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent) void PlayerOnDeath();
 	UFUNCTION(BlueprintCallable) int32 CurrentGold() { return playerGold; }
 	UFUNCTION(BlueprintCallable) bool EnoughGold(int32 t_need) {
 		if (playerGold >= t_need) {
@@ -52,11 +53,11 @@ public:
 		}
 		return false;
 	}
-	UFUNCTION(BlueprintCallable) void SetPlacingObject(Aturret_ai_base* t_obj);
-	UFUNCTION(BlueprintCallable) bool BuyTurret();
-	UFUNCTION(BlueprintCallable) bool BuyAmmo();
-	UFUNCTION(BlueprintCallable) bool NewAlly();
-	UFUNCTION(BlueprintCallable) bool BuyMediPack();
-
+	UFUNCTION(BlueprintCallable)	void SetPlacingObject(Aturret_ai_base* t_obj);
+	UFUNCTION(BlueprintCallable)	bool BuyTurret();
+	UFUNCTION(BlueprintCallable)	bool BuyAmmo();
+	UFUNCTION(BlueprintCallable)	bool NewAlly();
+	UFUNCTION(BlueprintCallable)	bool BuyMediPack();
+	UFUNCTION()						void AddGold(int32 t_g) { playerGold += t_g; }
 	FTimerHandle m_shootTimerHandle;
 };
