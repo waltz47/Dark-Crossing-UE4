@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "character/eveNICharacter.h"
+#include "sound/soundcue.h"
 #include "evePlayer.generated.h"
 
 #define WEAPON_RANGE		20000.f
@@ -11,6 +12,7 @@
 class APlayerController;
 class Aturret_ai_base;
 class AeveNICharacter;
+class UAudioComponent;
 UCLASS()
 class EVE_API AevePlayer : public AeveNICharacter
 {
@@ -29,9 +31,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
 	UParticleSystem* bloodFX;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	float HealthPercentHeartbeatSoundThreshold = 0.3f;
+
+	// Heartbeat sound
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UAudioComponent* HeartbeatSoundComponent;
 
 protected:
 	virtual void BeginPlay() override;
+	bool HasLowHealthForHeartbeatSound() const;
 
 public:
 	AevePlayer();

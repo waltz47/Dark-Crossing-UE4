@@ -15,6 +15,7 @@
 #include "kismet/kismetsystemlibrary.h"
 #include "const.h"
 #include "navigationsystem.h"
+#include "Components/AudioComponent.h"
 
 AevePlayer::AevePlayer()
 {
@@ -27,6 +28,9 @@ AevePlayer::AevePlayer()
 	bloodParticleTransformComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BloodParticleTransform"));
 	// Add to the hierarchy
 	bloodParticleTransformComponent->SetupAttachment(RootComponent);
+
+	// Add audio component to hierarchy
+	HeartbeatSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartBeatSound"));
 }
 void AevePlayer::BeginPlay()
 {
@@ -36,6 +40,11 @@ void AevePlayer::BeginPlay()
 		m_controller->SetShowMouseCursor(true);
 	}
 
+}
+
+bool AevePlayer::HasLowHealthForHeartbeatSound() const
+{
+	return CurrentHealthPercent() < HealthPercentHeartbeatSoundThreshold;
 }
 
 // Called every frame
@@ -87,6 +96,24 @@ void AevePlayer::Tick(float DeltaTime)
 			}
 		}
 		m_bPlacingObjLocationValid = b_ok;
+
+		// Are we at low health? Then play the heartbeat sound cue
+		if (HasLowHealthForHeartbeatSound())
+		{
+			// If we are not already playing the heartbeat sound, play it
+			if (!HeartbeatSoundComponent->IsPlaying())
+			{
+				HeartbeatSoundComponent->Play();
+			}
+		}
+		else
+		{
+			// If we are playing the heartbeat sound, stop it
+			if (HeartbeatSoundComponent->IsPlaying())
+			{
+				HeartbeatSoundComponent->Stop();
+			}
+		}
 	}
 }
 

@@ -18,7 +18,14 @@ AeveCharacter::AeveCharacter()
 void AeveCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Remember the max health for future calculations
+	maxHealth = health;
+}
+
+float AeveCharacter::CurrentHealthPercent() const
+{
+	return health / maxHealth;
 }
 
 // Called every frame
@@ -83,3 +90,4 @@ bool AeveCharacter::IsDead()
 {
 	return GetWorld()->GetTimerManager().IsTimerActive(deathTimer);
 }
+
