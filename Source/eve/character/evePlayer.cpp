@@ -161,6 +161,10 @@ void AevePlayer::OnDeath()
 {
 	Super::OnDeath();
 	PlayerOnDeath();
+	
+	// Play death sound cue
+	UGameplayStatics::PlaySound2D(this, DeathSoundCue);
+	
 	//Ulib::Destroy(this);
 }
 void AevePlayer::SetPlacingObject(Aturret_ai_base* t_obj)
@@ -253,6 +257,11 @@ float AevePlayer::TakeDamage(float _damage, const struct FDamageEvent& damageEve
 			bloodParticleTransformComponent->GetComponentRotation(),
 			bloodParticleTransformComponent->GetComponentScale()
 		);
+	}
+
+	// Play a random take damage sound cue
+	if (TakeDamageSoundCues.Num() > 0) {
+		UGameplayStatics::PlaySound2D(this, TakeDamageSoundCues[FMath::RandRange(0, TakeDamageSoundCues.Num() - 1)]);
 	}
 	
 	return _damage;

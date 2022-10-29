@@ -31,12 +31,20 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
 	UParticleSystem* bloodFX;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
 	float HealthPercentHeartbeatSoundThreshold = 0.3f;
 
 	// Heartbeat sound
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
 	UAudioComponent* HeartbeatSoundComponent;
+	
+	// List of take damage sound cues
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	TArray<USoundCue*> TakeDamageSoundCues;
+
+	// Death sound
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	USoundCue* DeathSoundCue;
 
 protected:
 	virtual void BeginPlay() override;
