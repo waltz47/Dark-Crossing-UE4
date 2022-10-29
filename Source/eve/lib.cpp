@@ -78,7 +78,7 @@ ACharacter* Ulib::GetEntityInVision(AActor* actor, float cone_radius, float deg)
 	return ret_entity;
 }
 
-TArray<ACharacter*> Ulib::GetAllNI(UObject* contextObj)
+TArray<AeveCharacter*> Ulib::GetAllNI(UObject* contextObj)
 {
 	if (!contextObj)
 		return {};
@@ -86,13 +86,13 @@ TArray<ACharacter*> Ulib::GetAllNI(UObject* contextObj)
 	if (!world)
 		return {};
 	TArray<AActor*> out_actors;
-	TArray<ACharacter*> ret_characters;
+	TArray<AeveCharacter*> ret_characters;
 	UGameplayStatics::GetAllActorsOfClassWithTag(world, ACharacter::StaticClass(), FName(ni_character_tag), out_actors);
 	UE_LOG(LogTemp, Warning, TEXT("Ni characters array size :%d"), out_actors.Num());
 	for (AActor* actor : out_actors)
 	{
-		ACharacter* character = Cast<ACharacter>(actor);
-		if (Ulib::Valid(character))
+		AeveCharacter* character = Cast<AeveCharacter>(actor);
+		if (Ulib::Valid(character) && character->IsDead() == false)
 			ret_characters.Add(character);
 	}
 	return ret_characters;
