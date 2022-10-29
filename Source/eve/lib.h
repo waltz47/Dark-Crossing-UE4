@@ -28,5 +28,5 @@ public:
 		return IsInfected(self) ^ IsInfected(other);
 	}
 	static ACharacter* GetEntityInVision(AActor* actor, float cone_radius, float deg);
-	static TArray<ACharacter*> GetAllNI(UObject* contextObj);
+	static TArray<class AeveCharacter*> GetAllNI(UObject* contextObj);
 };

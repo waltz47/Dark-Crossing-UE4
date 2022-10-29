@@ -50,7 +50,8 @@ void AeveInfected::Tick(float DeltaTime)
 		}
 		case INFECTED_STATE_ROAM:
 		{
-			m_target = Ulib::GetEntityInVision(this, visionRange, visionDeg);
+			break;
+			/*m_target = CasrUlib::GetEntityInVision(this, visionRange, visionDeg);
 			if (Ulib::Valid(m_target)) {
 				SetInfectedState(INFECTED_STATE_CHASE);
 				break;
@@ -65,7 +66,7 @@ void AeveInfected::Tick(float DeltaTime)
 				if ((FMath::RandRange(1, 100) % 2) && UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), loc, this)) {
 					m_aicontroller->MoveToLocation(loc);
 				}
-			}
+			}*/
 			//eqs
 			break;
 		}
@@ -75,8 +76,7 @@ void AeveInfected::Tick(float DeltaTime)
 				SetInfectedState(INFECTED_STATE_ROAM);
 				break;			
 			}
-			AeveCharacter* character = Cast<AeveCharacter>(m_target);
-			if (character && character->IsDead()) {
+			if (m_target->IsDead()) {
 				m_target = nullptr;
 				SetInfectedState(INFECTED_STATE_ROAM);
 				break;
@@ -162,11 +162,9 @@ float AeveInfected::TakeDamage(float _damage, const struct FDamageEvent& damageE
 			return 0.f;
 		m_bDeadFlag = 1;
 	}
-	if (Ulib::Valid(Cast<ACharacter>(causer)) && Ulib::IsHostile(this, causer)) {
-		if (!Ulib::Valid(m_target)) {
-			m_target = Cast<ACharacter>(causer);
-			SetInfectedState(INFECTED_STATE_CHASE);
-		}
+	if (!Ulib::Valid(m_target) && Ulib::Valid(Cast<AeveCharacter>(causer)) && Ulib::IsHostile(this, causer)) {
+		m_target = Cast<AeveCharacter>(causer);
+		SetInfectedState(INFECTED_STATE_CHASE);
 	}
 
 	// Show blood particle FX using Cascade
