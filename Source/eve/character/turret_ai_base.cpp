@@ -18,13 +18,17 @@ Aturret_ai_base::Aturret_ai_base()
 	if (GetCharacterMovement()) {
 		GetCharacterMovement()->DisableMovement();
 	}
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	turretBase = CreateDefaultSubobject<UStaticMeshComponent>("Turret Base Mesh");
 	turretBase->SetupAttachment(GetRootComponent());
 	turretBase->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 	turretBarrel = CreateDefaultSubobject<UStaticMeshComponent>("Turret barrel Mesh");
 	turretBarrel->SetupAttachment(turretBase);
 	turretBarrel->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	muzzleComp = CreateDefaultSubobject<USceneComponent>("MuzzleComp");
+	muzzleComp->SetupAttachment(turretBarrel);
 
 
 }
@@ -80,6 +84,11 @@ void Aturret_ai_base::Shoot()
 	if (ValidTarget()) {
 		DrawDebugLine(GetWorld(), GetActorLocation(), m_target->GetActorLocation(), FColor::Red, false, -1.f, 0, 1.f);
 		UGameplayStatics::ApplyDamage(m_target, damage, nullptr, this, UDamageType::StaticClass());
+		if (muzzleFlash) {
+			FVector location = muzzleComp->GetComponentLocation();
+			FRotator rotation = muzzleComp->GetComponentRotation();
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), muzzleFlash, location, rotation, FVector(3.f, 3.f, 3.f));
+		}
 	}
 }
 bool Aturret_ai_base::ValidTarget()

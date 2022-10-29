@@ -28,6 +28,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) UStaticMeshComponent* turretBarrel = nullptr;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) UStaticMeshComponent* turretBase = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) USceneComponent* muzzleComp = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) UParticleSystem* muzzleFlash = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float attackRange = 600.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float fireRate = 2.f;
 
