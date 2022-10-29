@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "character/eveCharacter.h"
+#include "Particles/ParticleEmitter.h"
 #include "eveInfected.generated.h"
 
 #define LOOK_AT_TOLERANCE	10.f
@@ -28,9 +29,16 @@ private:
 	UPROPERTY()	ACharacter*			m_target = nullptr;
 	UPROPERTY()	UParticleSystemComponent*	m_status_fire_particle = nullptr;
 
+	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	USceneComponent* bloodParticleTransformComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
+	UParticleSystem* bloodFX;
+
 	FTimerHandle					m_attackTimerHandle;
 protected:
 	virtual void BeginPlay() override;
+	
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		bool							m_bAttacking = false;

@@ -13,12 +13,18 @@
 #include "gameframework/actor.h"
 #include "character/eveCharacter.h"
 #include "character/eveplayer.h"
+#include "components/capsulecomponent.h"
 #include "particles/particlesystemcomponent.h"
 
 AeveInfected::AeveInfected()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	SetInfectedState(INFECTED_STATE_ROAM);
+
+	// Add scene component for the transform of blood particle FX
+	bloodParticleTransformComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BloodParticleTransform"));
+	// Add to the hierarchy
+	bloodParticleTransformComponent->SetupAttachment(RootComponent);
 }
 
 void AeveInfected::BeginPlay()
@@ -26,8 +32,8 @@ void AeveInfected::BeginPlay()
 	Super::BeginPlay();
 	Ulib::SetActorI(this);
 	m_aicontroller = Cast<AAIController>(GetController());
-	
 }
+
 void AeveInfected::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -162,6 +168,18 @@ float AeveInfected::TakeDamage(float _damage, const struct FDamageEvent& damageE
 			SetInfectedState(INFECTED_STATE_CHASE);
 		}
 	}
+
+	// Show blood particle FX using Cascade
+	if (bloodFX) {
+		UGameplayStatics::SpawnEmitterAtLocation(
+			this,
+			bloodFX,
+			bloodParticleTransformComponent->GetComponentLocation(),
+			bloodParticleTransformComponent->GetComponentRotation(),
+			bloodParticleTransformComponent->GetComponentScale()
+		);
+	}
+	
 	return _damage;
 }
 void AeveInfected::OnDeath()
