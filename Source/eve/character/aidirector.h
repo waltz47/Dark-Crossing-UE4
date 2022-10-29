@@ -8,6 +8,8 @@
 
 class ACharacter;
 class AeveInfected;
+class AeveCharacter;
+class AevePlayer;
 #define INF_CAP					200
 #define INF_ARMOR_CAP			100
 #define INF_DAMAGE_CAP			80
@@ -28,11 +30,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	int32					maxSimActive = 50;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	float					spawnTimeDiff = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	int32					m_evalTime = 2.f;
+	UPROPERTY()									AevePlayer*				m_player = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)									TArray<TSubclassOf<AeveInfected>> infectedClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))	TArray<FVector>			spawnPoints;
 
-	UPROPERTY() TArray<ACharacter*>		squadToAttack;
+	UPROPERTY() TArray<AeveCharacter*>	squadToAttack;
 	UPROPERTY()	TArray<AeveInfected*>	m_infected;
 
 	Aaidirector();

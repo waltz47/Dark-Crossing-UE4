@@ -70,7 +70,7 @@ void Aweapon::Shoot()
 	FVector trace_start = GetActorLocation() + m_owner->GetActorForwardVector() * 10.f;
 	FVector trace_end = trace_start + m_owner->GetActorForwardVector() * GUN_RANGE;
 	TArray<FHitResult> out_hits;
-	float t_damage = damage;// +m_owner->damage;
+	float t_damage = (damage + m_owner->damage) / 1.5f;
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> object_types;
 	TArray<AActor*> ignored_actors;

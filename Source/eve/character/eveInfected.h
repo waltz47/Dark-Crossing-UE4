@@ -15,6 +15,7 @@ enum InfectedState;
 enum StatusEffect;
 class AAIController;
 class UAnimSequence;
+class AeveCharacter;
 UCLASS()
 class EVE_API AeveInfected : public AeveCharacter
 {
@@ -26,7 +27,7 @@ private:
 	InfectedState					m_infectedState;
 	StatusEffect					m_statusEffect;
 	UPROPERTY() AAIController*		m_aicontroller = nullptr;
-	UPROPERTY()	ACharacter*			m_target = nullptr;
+	UPROPERTY()	AeveCharacter*		m_target = nullptr;
 	UPROPERTY()	UParticleSystemComponent*	m_status_fire_particle = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))

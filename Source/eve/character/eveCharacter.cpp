@@ -66,7 +66,7 @@ void AeveCharacter::OnDeath()
 	//Ulib::Destroy(this);
 	SetActorTickEnabled(false);
 	GetCharacterMovement()->DisableMovement();
-	GetWorld()->GetTimerManager().SetTimer(deathTimer, this, &AeveCharacter::DestroyObject, 10.f, true);
+	GetWorld()->GetTimerManager().SetTimer(deathTimer, this, &AeveCharacter::DestroyObject, 100.f, true);
 }
 float AeveCharacter::TakeDamage(float dmg, const struct FDamageEvent& eevent, AController* causer, AActor* actor)
 {

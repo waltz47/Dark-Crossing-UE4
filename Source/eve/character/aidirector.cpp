@@ -30,9 +30,11 @@ void Aaidirector::NextWave()
 		return;
 	
 	if (m_currentWave) {
-		AevePlayer* player = Cast<AevePlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-		if (Ulib::Valid(player)) {
-			player->AddGold(numInfected * KILL_MULTIPLIER);
+		if(!Ulib::Valid(m_player))
+			m_player = Cast<AevePlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+		if (Ulib::Valid(m_player)) {
+			m_player->AddGold(numInfected * KILL_MULTIPLIER);
 		}
 	}
 	/*Increase health / armor*/
@@ -72,16 +74,24 @@ void Aaidirector::WaveStart()
 }
 void Aaidirector::SpawnAI()
 {
-	if (infectedClass.Num() == 0)
+	if (infectedClass.Num() == 0 || spawnPoints.Num() == 0)
 		return;
 	if (m_currentSpawned >= numInfected) {
 		GetWorld()->GetTimerManager().ClearTimer(m_spawnTimerHandle);
 		m_bWaveOver = 1;
 		return;
 	}
-	if (m_top >= spawnPoints.Num())
-		m_top = 0;
-
+	m_top %= spawnPoints.Num();
+	int32 tp = spawnPoints.Num();
+	if (Ulib::Valid(m_player)) {
+		float t_dst = FVector::Distance(m_player->GetActorLocation(), GetActorLocation() + spawnPoints[m_top]);
+		while (t_dst <= 3000.f && tp-- && Ulib::Valid(m_player)) {
+			m_top++;
+			m_top %= spawnPoints.Num();
+			t_dst = FVector::Distance(m_player->GetActorLocation(), GetActorLocation() + spawnPoints[m_top]);
+		}
+	}
+	m_top %= spawnPoints.Num();
 	FVector spawn_loc = GetActorLocation() + spawnPoints[m_top];
 	FRotator spawn_rot = spawn_loc.Rotation();
 	FActorSpawnParameters spawnParams;
@@ -103,9 +113,9 @@ void Aaidirector::EvalAI()
 	for (AeveInfected* infected : m_infected) {
 		if (Ulib::Valid(infected) && infected->IsDead() == false) {
 			t_valid++;
-			ACharacter* t_ctr = nullptr;
-			for (ACharacter* character : squadToAttack) {
-				if (Ulib::Valid(character)) {
+			AeveCharacter* t_ctr = nullptr;
+			for (AeveCharacter* character : squadToAttack) {
+				if (Ulib::Valid(character) && character->IsDead()==false) {
 					float t_dst = FVector::Distance(character->GetActorLocation(), infected->GetActorLocation());
 					if (!Ulib::Valid(t_ctr) || t_dst < FVector::Distance(t_ctr->GetActorLocation(), infected->GetActorLocation())) {
 						t_ctr = character;

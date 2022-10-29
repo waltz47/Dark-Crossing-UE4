@@ -193,7 +193,7 @@ bool AevePlayer::BuyTurret()
 bool AevePlayer::BuyAmmo()
 {
 	if (EnoughGold(ammoCost)) {
-		res.ammo += 100;
+		res.ammo += 200;
 	}
 	else {
 		return false;
@@ -216,7 +216,7 @@ bool AevePlayer::NewAlly()
 		playerGold += allyCost;
 		return false;
 	}
-	if (c_nav->GetRandomPointInNavigableRadius(GetActorLocation(), 2500.f, t_nav) == false) {
+	if (c_nav->GetRandomReachablePointInRadius(GetActorLocation(), 2500.f, t_nav) == false) {
 		playerGold += allyCost;
 		UE_LOG(LogTemp, Warning, TEXT("no ally spawn point"));
 		return false;
