@@ -11,6 +11,7 @@
 #define MELEE_RANGE 150.f
 #define NUM_RANDOM_POINTS	10
 
+class USoundCue;
 enum InfectedState;
 enum StatusEffect;
 class AAIController;
@@ -35,6 +36,19 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
 	UParticleSystem* bloodFX;
+
+	// List of take damage sound cues
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	TArray<USoundCue*> TakeDamageSoundCues;
+
+	// List of death sound cues
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	TArray<USoundCue*> DeathSoundCues;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	float MinTimeSinceLastDamageSound = 1.0f;
+
+	float lastDamageSoundCooldown = 0.f;
 
 	FTimerHandle					m_attackTimerHandle;
 protected:

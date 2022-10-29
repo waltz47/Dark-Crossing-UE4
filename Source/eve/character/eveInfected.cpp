@@ -25,6 +25,9 @@ AeveInfected::AeveInfected()
 	bloodParticleTransformComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BloodParticleTransform"));
 	// Add to the hierarchy
 	bloodParticleTransformComponent->SetupAttachment(RootComponent);
+
+	// Initialize the time since last damage sound counter
+	lastDamageSoundCooldown = MinTimeSinceLastDamageSound;
 }
 
 void AeveInfected::BeginPlay()
@@ -104,6 +107,9 @@ void AeveInfected::Tick(float DeltaTime)
 			break;
 		}
 	}
+
+	// Decrease the time since last damage sound by the time delta
+	lastDamageSoundCooldown -= DeltaTime;
 }
 void AeveInfected::SetInfectedState(InfectedState t_newState) {
 	m_infectedState = t_newState;
@@ -177,6 +183,14 @@ float AeveInfected::TakeDamage(float _damage, const struct FDamageEvent& damageE
 			bloodParticleTransformComponent->GetComponentScale()
 		);
 	}
+
+	// Play a random take damage sound cue
+	if (TakeDamageSoundCues.Num() > 0 && lastDamageSoundCooldown <= 0) {
+		UGameplayStatics::PlaySound2D(this, TakeDamageSoundCues[FMath::RandRange(0, TakeDamageSoundCues.Num() - 1)]);
+
+		// reset the time since last damage sound counter
+		lastDamageSoundCooldown = MinTimeSinceLastDamageSound;
+	}
 	
 	return _damage;
 }
@@ -185,5 +199,11 @@ void AeveInfected::OnDeath()
 	if (m_status_fire_particle) {
 		m_status_fire_particle->DestroyComponent();
 	}
+
+	// Play a random death sound cue
+	if (DeathSoundCues.Num() > 0) {
+		UGameplayStatics::PlaySound2D(this, DeathSoundCues[FMath::RandRange(0, DeathSoundCues.Num() - 1)]);
+	}
+	
 	Super::OnDeath();
 }
