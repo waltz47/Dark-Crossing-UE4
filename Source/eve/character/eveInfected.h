@@ -29,10 +29,10 @@ private:
 	UPROPERTY()	ACharacter*			m_target = nullptr;
 	UPROPERTY()	UParticleSystemComponent*	m_status_fire_particle = nullptr;
 
-	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
 	USceneComponent* bloodParticleTransformComponent;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
 	UParticleSystem* bloodFX;
 
 	FTimerHandle					m_attackTimerHandle;

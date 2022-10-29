@@ -22,6 +22,11 @@ AevePlayer::AevePlayer()
 	cameraBoom->SetupAttachment(GetRootComponent());
 	camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	camera->SetupAttachment(cameraBoom);
+
+	// Add scene component for the transform of blood particle FX
+	bloodParticleTransformComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BloodParticleTransform"));
+	// Add to the hierarchy
+	bloodParticleTransformComponent->SetupAttachment(RootComponent);
 }
 void AevePlayer::BeginPlay()
 {
@@ -206,4 +211,22 @@ bool AevePlayer::BuyMediPack()
 		return false;
 	health = 100.f;
 	return true;
+}
+
+float AevePlayer::TakeDamage(float _damage, const struct FDamageEvent& damageEvent, AController* controller, AActor* causer)
+{
+	_damage = Super::TakeDamage(_damage, damageEvent, controller, causer);
+
+	// Show blood particle FX using Cascade
+	if (bloodFX) {
+		UGameplayStatics::SpawnEmitterAtLocation(
+			this,
+			bloodFX,
+			bloodParticleTransformComponent->GetComponentLocation(),
+			bloodParticleTransformComponent->GetComponentRotation(),
+			bloodParticleTransformComponent->GetComponentScale()
+		);
+	}
+	
+	return _damage;
 }

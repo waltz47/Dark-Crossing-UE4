@@ -23,6 +23,13 @@ private:
 		Aturret_ai_base*							m_placingObj = nullptr;
 	bool											m_bPlacingObjLocationValid = 0;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
+	USceneComponent* bloodParticleTransformComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Blood, meta=(AllowPrivateAccess = "true"))
+	UParticleSystem* bloodFX;
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -44,6 +51,7 @@ public:
 	void StopShooting();
 	void StartShooting();
 	virtual void OnDeath();
+	virtual float TakeDamage(float _damage, const struct FDamageEvent& damagEvent, AController* instigator, AActor* causer);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent) void PlayerOnDeath();
 	UFUNCTION(BlueprintCallable) int32 CurrentGold() { return playerGold; }
 	UFUNCTION(BlueprintCallable) bool EnoughGold(int32 t_need) {
