@@ -46,6 +46,9 @@ void Aturret_ai_base::SetActive()
 	turretBase->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	turretBarrel->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	// Play turret build sound
+	// UGameplayStatics::PlaySoundAtLocation(GetWorld(), buildSound, GetActorLocation());
 }
 
 void Aturret_ai_base::Tick(float DeltaTime)
