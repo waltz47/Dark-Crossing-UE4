@@ -48,6 +48,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
 	float MinTimeSinceLastDamageSound = 1.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	float TakeDamageSoundVolumeMultiplier = 1.0f;
+
 	float lastDamageSoundCooldown = 0.f;
 
 	FTimerHandle					m_attackTimerHandle;

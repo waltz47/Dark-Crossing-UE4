@@ -203,7 +203,7 @@ void AeveInfected::OnDeath()
 
 	// Play a random death sound cue
 	if (DeathSoundCues.Num() > 0) {
-		UGameplayStatics::PlaySoundAtLocation(this, DeathSoundCues[FMath::RandRange(0, DeathSoundCues.Num() - 1)], GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSoundCues[FMath::RandRange(0, DeathSoundCues.Num() - 1)], GetActorLocation(), TakeDamageSoundVolumeMultiplier);
 	}
 	
 	Super::OnDeath();
