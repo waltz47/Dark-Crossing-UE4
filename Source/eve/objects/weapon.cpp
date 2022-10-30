@@ -115,7 +115,9 @@ void Aweapon::Reload()
 }
 void Aweapon::StartReload()
 {
-	if (IsReloading())
+	if (!Ulib::Valid(m_owner) || m_owner->res.ammo == 0)
+		return;
+	if (IsReloading() || m_clipAmmo == clipSize)
 		return;
 	if (gunReloadSFX) {
 		UGameplayStatics::PlaySoundAtLocation(this, gunReloadSFX, GetActorLocation(), GetActorRotation());
@@ -130,7 +132,7 @@ void Aweapon::StopReload()
 	m_clipAmmo = 0;
 	int32 fill = FMath::Min(totalAmmo, clipSize);
 	m_clipAmmo = fill;
-	m_owner->res.ammo -= fill;
+	m_owner->res.ammo = totalAmmo - fill;
 }
 bool Aweapon::IsReloading()
 {
