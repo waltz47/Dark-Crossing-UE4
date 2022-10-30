@@ -9,6 +9,7 @@
 #include "kismet/kismetmathlibrary.h"
 #include "gameframework/charactermovementcomponent.h"
 #include "navigationsystem.h"
+#include "PhysXInterfaceWrapperCore.h"
 #include "character/aidirector.h"
 #include "gameframework/actor.h"
 #include "character/eveCharacter.h"
@@ -186,7 +187,7 @@ float AeveInfected::TakeDamage(float _damage, const struct FDamageEvent& damageE
 
 	// Play a random take damage sound cue
 	if (TakeDamageSoundCues.Num() > 0 && lastDamageSoundCooldown <= 0) {
-		UGameplayStatics::PlaySound2D(this, TakeDamageSoundCues[FMath::RandRange(0, TakeDamageSoundCues.Num() - 1)]);
+		UGameplayStatics::PlaySoundAtLocation(this, TakeDamageSoundCues[FMath::RandRange(0, TakeDamageSoundCues.Num() - 1)], GetActorLocation());
 
 		// reset the time since last damage sound counter
 		lastDamageSoundCooldown = MinTimeSinceLastDamageSound;
@@ -202,7 +203,7 @@ void AeveInfected::OnDeath()
 
 	// Play a random death sound cue
 	if (DeathSoundCues.Num() > 0) {
-		UGameplayStatics::PlaySound2D(this, DeathSoundCues[FMath::RandRange(0, DeathSoundCues.Num() - 1)]);
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSoundCues[FMath::RandRange(0, DeathSoundCues.Num() - 1)], GetActorLocation());
 	}
 	
 	Super::OnDeath();
