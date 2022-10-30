@@ -22,6 +22,8 @@ void Aaidirector::BeginPlay()
 {
 	Super::BeginPlay();
 	NextWave();
+	FTimerHandle t_activeCount;
+	GetWorld()->GetTimerManager().SetTimer(t_activeCount, this, &Aaidirector::GetRemainingInfectedCount, 1.f, true, 1.f);
 }
 
 void Aaidirector::NextWave()
@@ -58,6 +60,7 @@ void Aaidirector::NextWave()
 	m_currentWaveKillCount = 0;
 	m_currentSpawned = 0;
 	m_top = 0;
+	m_valid = 0;
 	m_infected.Empty();
 	squadToAttack.Empty();
 	
@@ -148,4 +151,13 @@ void Aaidirector::EvalAI()
 void Aaidirector::StopEval()
 {
 	GetWorld()->GetTimerManager().ClearTimer(t_eval_timer);
+}
+void Aaidirector::GetRemainingInfectedCount()
+{
+	int32 t_num = 0;
+	for(AeveInfected* infected:m_infected) {
+		if (Ulib::Valid(infected) && infected->IsDead() == false)
+			t_num++;
+	}
+	m_valid = t_num;
 }

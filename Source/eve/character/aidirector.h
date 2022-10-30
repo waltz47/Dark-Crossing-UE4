@@ -94,7 +94,10 @@ public:
 	float					m_currentWaveArmor = 10.f;
 	float					m_currentWaveDamage = 10.f;
 	bool					m_bWaveOver = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32					m_valid = 0;
 
+	UFUNCTION(BlueprintCallable) void GetRemainingInfectedCount();
 	UFUNCTION(BlueprintCallable) int32 GetTotalInfectedKilled() { return m_overallSpawned + m_currentWaveKillCount; }
 	UFUNCTION(BlueprintCallable) int32 GetCurrentWaveNum() { return m_currentWave; }
 	UFUNCTION(BlueprintCallable) float GetTimeToNextWave() {
