@@ -10,6 +10,7 @@
 #include "kismet/kismetsystemlibrary.h"
 #include "components/capsulecomponent.h"
 #include "drawdebughelpers.h"
+#include "sound/soundcue.h"
 
 Aturret_ai_base::Aturret_ai_base()
 {
@@ -48,7 +49,11 @@ void Aturret_ai_base::SetActive()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	// Play turret build sound
-	// UGameplayStatics::PlaySoundAtLocation(GetWorld(), buildSound, GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		ConstructSoundCue,
+		GetActorLocation()
+	);
 }
 
 void Aturret_ai_base::Tick(float DeltaTime)
@@ -92,6 +97,19 @@ void Aturret_ai_base::Shoot()
 			FRotator rotation = muzzleComp->GetComponentRotation();
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), muzzleFlash, location, rotation, FVector(3.f, 3.f, 3.f));
 		}
+		
+		// Play turret shoot sound
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			ShootSoundCue,
+			GetActorLocation(),
+			GetActorRotation(),
+			1,
+			1,
+			0,
+			nullptr,
+			ShootSoundConcurrency
+		);
 	}
 }
 bool Aturret_ai_base::ValidTarget()
