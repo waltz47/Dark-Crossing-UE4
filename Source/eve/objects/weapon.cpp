@@ -149,5 +149,12 @@ void Aweapon::MuzzleEffect()
 void Aweapon::MuzzleSound()
 {
 	// Play shoot sound
-	UGameplayStatics::PlaySoundAtLocation(this, MuzzleSoundCues[FMath::RandRange(0, MuzzleSoundCues.Num() - 1)], GetActorLocation(), MuzzleSoundMultiplier);	
+	if (MuzzleSoundCues.Num() > 0)
+	{
+		const auto MuzzleSoundCue = MuzzleSoundCues[FMath::RandRange(0, MuzzleSoundCues.Num() - 1)];
+		if (IsValid(MuzzleSoundCue))
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, MuzzleSoundCue, GetActorLocation(), MuzzleSoundMultiplier);
+		}
+	}
 }
