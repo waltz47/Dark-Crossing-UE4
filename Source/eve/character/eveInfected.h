@@ -53,6 +53,10 @@ private:
 
 	float lastDamageSoundCooldown = 0.f;
 
+	// Sound concurrency settings for the damage
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	USoundConcurrency* TakeDamageSoundConcurrency;
+
 	FTimerHandle					m_attackTimerHandle;
 protected:
 	virtual void BeginPlay() override;

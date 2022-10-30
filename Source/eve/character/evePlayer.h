@@ -46,6 +46,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
 	USoundCue* DeathSoundCue;
 
+	// Sound concurrency settings for the muzzle sound
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	USoundConcurrency* FootstepSoundConcurrency;
+
+	// Sound concurrency settings for the take damage sound
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	USoundConcurrency* TakeDamageSoundConcurrency;
+
+
 protected:
 	virtual void BeginPlay() override;
 	bool HasLowHealthForHeartbeatSound() const;
