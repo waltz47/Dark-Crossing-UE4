@@ -10,7 +10,7 @@ class ACharacter;
 class AeveInfected;
 class AeveCharacter;
 class AevePlayer;
-#define INF_CAP					250
+#define INF_CAP					300 //Per Wave
 #define INF_ARMOR_CAP			100
 #define INF_DAMAGE_CAP			80
 #define INF_MAX_SIM_ACTIVE_CAP	200 //max infected at a time

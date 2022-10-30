@@ -28,18 +28,16 @@ void Aaidirector::NextWave()
 {
 	if (spawnPoints.Num() == 0)
 		return;
-	
-	if (m_currentWave) {
-		if(!Ulib::Valid(m_player))
-			m_player = Cast<AevePlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (!Ulib::Valid(m_player)) {
+		m_player = Cast<AevePlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	}
 
-		if (Ulib::Valid(m_player)) {
-			m_player->AddGold(numInfected * KILL_MULTIPLIER);
-		}
+	if (m_currentWave && Ulib::Valid(m_player)) {
+		m_player->AddGold(numInfected * KILL_MULTIPLIER);
 	}
 	/*Increase health / armor*/
-	m_currentWaveHealth += (10.f * GetDifficultyFactor());
-	m_currentWaveArmor += (5.f * GetDifficultyFactor());
+	m_currentWaveHealth += (5.f * GetDifficultyFactor());
+	m_currentWaveArmor += (2.f * GetDifficultyFactor());
 	if (m_currentWaveArmor > INF_ARMOR_CAP) {
 		m_currentWaveArmor = INF_ARMOR_CAP;
 	}
@@ -85,13 +83,15 @@ void Aaidirector::SpawnAI()
 	int32 tp = spawnPoints.Num();
 	if (Ulib::Valid(m_player)) {
 		float t_dst = FVector::Distance(m_player->GetActorLocation(), GetActorLocation() + spawnPoints[m_top]);
-		while (t_dst <= 5000.f && tp-- && Ulib::Valid(m_player)) {
+		while (t_dst <= 3000.f && tp-- && Ulib::Valid(m_player)) {
 			m_top++;
 			m_top %= spawnPoints.Num();
 			t_dst = FVector::Distance(m_player->GetActorLocation(), GetActorLocation() + spawnPoints[m_top]);
 		}
 	}
 	m_top %= spawnPoints.Num();
+	/*if(m_player)
+		UE_LOG(LogTemp, Warning, TEXT("dst: %f"), FVector::Distance(m_player->GetActorLocation(), GetActorLocation() + spawnPoints[m_top]));*/
 	FVector spawn_loc = GetActorLocation() + spawnPoints[m_top];
 	FRotator spawn_rot = spawn_loc.Rotation();
 	FActorSpawnParameters spawnParams;
