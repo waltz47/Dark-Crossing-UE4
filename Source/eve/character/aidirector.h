@@ -10,11 +10,20 @@ class ACharacter;
 class AeveInfected;
 class AeveCharacter;
 class AevePlayer;
-#define INF_CAP					200
+#define INF_CAP					250
 #define INF_ARMOR_CAP			100
 #define INF_DAMAGE_CAP			80
 #define INF_MAX_SIM_ACTIVE_CAP	200 //max infected at a time
 #define KILL_MULTIPLIER			2
+
+UENUM(BlueprintType)
+enum class EGameDifficulty :uint8
+{
+	LEVEL_EASY,
+	LEVEL_MEDIUM,
+	LEVEL_HARD,
+	LEVEL_INSANE
+};
 UCLASS()
 class EVE_API Aaidirector : public AActor
 {
@@ -29,8 +38,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	int32					waveCooldown = 10;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	int32					maxSimActive = 50;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	float					spawnTimeDiff = 1.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)	int32					m_evalTime = 2.f;
-	UPROPERTY()									AevePlayer*				m_player = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)	float					AIEvaluationTime = 2.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)	float					FactorEasy = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)	float					FactorMedium = 2.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)	float					FactorHard = 4.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)	float					FactorInsane = 8.f;
+	UPROPERTY()								AevePlayer*					m_player = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)									TArray<TSubclassOf<AeveInfected>> infectedClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (MakeEditWidget = true))	TArray<FVector>			spawnPoints;
@@ -38,12 +51,35 @@ public:
 	UPROPERTY() TArray<AeveCharacter*>	squadToAttack;
 	UPROPERTY()	TArray<AeveInfected*>	m_infected;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) EGameDifficulty			DifficultySetting = EGameDifficulty::LEVEL_MEDIUM;
+
 	Aaidirector();
 	void WaveStart();
 	void SpawnAI();
 	void EvalAI();
 	void StopEval();
 	void NextWave();
+	float GetDifficultyFactor()
+	{
+		switch (DifficultySetting) {
+			case EGameDifficulty::LEVEL_EASY: {
+				return FactorEasy;
+				break;
+			}
+			case EGameDifficulty::LEVEL_MEDIUM:
+			{
+				return FactorMedium;
+				break;
+			}
+			case EGameDifficulty::LEVEL_HARD:
+			{
+				return FactorHard;
+				break;
+			}
+			default:
+				return FactorInsane;
+		}
+	}
 	FTimerHandle m_spawnTimerHandle;
 	FTimerHandle t_eval_timer;
 	FTimerHandle t_next_wave_timer;

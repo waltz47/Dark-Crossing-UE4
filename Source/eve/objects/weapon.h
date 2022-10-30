@@ -29,6 +29,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float				fireRate = 2.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) UParticleSystem*	muzzleFlash = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) class USoundCue*	fireSound = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) USoundCue*			gunReloadSFX = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) UParticleSystem*	characterImpactFX = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) UParticleSystem*	otherImpactFX = nullptr;
 	int32															m_clipAmmo = 0;
