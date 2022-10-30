@@ -38,19 +38,19 @@ void Aaidirector::NextWave()
 		}
 	}
 	/*Increase health / armor*/
-	m_currentWaveHealth += 10.f;
-	m_currentWaveArmor += 5.f;
+	m_currentWaveHealth += (10.f * GetDifficultyFactor());
+	m_currentWaveArmor += (5.f * GetDifficultyFactor());
 	if (m_currentWaveArmor > INF_ARMOR_CAP) {
 		m_currentWaveArmor = INF_ARMOR_CAP;
 	}
-	m_currentWaveDamage += 5.f;
+	m_currentWaveDamage += (3.f * GetDifficultyFactor());
 	if (m_currentWaveDamage > INF_DAMAGE_CAP) {
 		m_currentWaveDamage = INF_DAMAGE_CAP;
 	}
 
 	squadToAttack = Ulib::GetAllNI(this);
-	numInfected += 10;
-	maxSimActive += 5;
+	numInfected += (10 * (int32)GetDifficultyFactor());
+	maxSimActive += 10;
 	if (maxSimActive > INF_MAX_SIM_ACTIVE_CAP) {
 		maxSimActive = INF_MAX_SIM_ACTIVE_CAP;
 	}
@@ -70,7 +70,7 @@ void Aaidirector::WaveStart()
 	squadToAttack = Ulib::GetAllNI(this);
 
 	GetWorld()->GetTimerManager().SetTimer(m_spawnTimerHandle, this, &Aaidirector::SpawnAI, spawnTimeDiff, true, 0.f);
-	GetWorld()->GetTimerManager().SetTimer(t_eval_timer, this, &Aaidirector::EvalAI, m_evalTime, true, 0.f);
+	GetWorld()->GetTimerManager().SetTimer(t_eval_timer, this, &Aaidirector::EvalAI, AIEvaluationTime, true, 0.f);
 }
 void Aaidirector::SpawnAI()
 {

@@ -117,6 +117,9 @@ void Aweapon::StartReload()
 {
 	if (IsReloading())
 		return;
+	if (gunReloadSFX) {
+		UGameplayStatics::PlaySoundAtLocation(this, gunReloadSFX, GetActorLocation(), GetActorRotation());
+	}
 	GetWorld()->GetTimerManager().SetTimer(reloadTimer, this, &Aweapon::StopReload, m_reloadTime, false);
 }
 void Aweapon::StopReload()

@@ -159,20 +159,23 @@ void AevePlayer::StopShooting()
 }
 void AevePlayer::OnDeath()
 {
-	Super::OnDeath();
+	//Super::OnDeath();
 	PlayerOnDeath();
 	
 	// Play death sound cue
 	UGameplayStatics::PlaySound2D(this, DeathSoundCue);
+
+	Super::OnDeath();
 	
-	//Ulib::Destroy(this);
 }
 void AevePlayer::SetPlacingObject(Aturret_ai_base* t_obj)
 {
 	if (!Ulib::Valid(t_obj))
 		return;
-	if (Ulib::Valid(m_placingObj))
+	if (Ulib::Valid(m_placingObj)) {
 		UE_LOG(LogTemp, Warning, TEXT("Already placing a turret"));
+		return;
+	}
 	m_placingObj = t_obj;
 }
 bool AevePlayer::BuyTurret()
