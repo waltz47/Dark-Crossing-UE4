@@ -5,6 +5,10 @@
 #include "lib.h"
 #include "components/capsulecomponent.h"
 #include "gameframework/charactermovementcomponent.h"
+#include "engine/staticmesh.h"
+#include "engine/staticmeshactor.h"
+#include "gameframework/actor.h"
+#include "components/staticmeshcomponent.h"
 
 // Sets default values
 AeveCharacter::AeveCharacter()
@@ -66,7 +70,8 @@ void AeveCharacter::OnDeath()
 	//Ulib::Destroy(this);
 	SetActorTickEnabled(false);
 	GetCharacterMovement()->DisableMovement();
-	GetWorld()->GetTimerManager().SetTimer(deathTimer, this, &AeveCharacter::DestroyObject, 100.f, true);
+	//Ulib::Destroy(this);
+	GetWorld()->GetTimerManager().SetTimer(deathTimer, this, &AeveCharacter::DestroyObject, 2.6f, true);
 }
 float AeveCharacter::TakeDamage(float dmg, const struct FDamageEvent& eevent, AController* causer, AActor* actor)
 {
@@ -84,6 +89,18 @@ float AeveCharacter::TakeDamage(float dmg, const struct FDamageEvent& eevent, AC
 }
 void AeveCharacter::DestroyObject()
 {
+	if (spawnOnDeath) {
+		AStaticMeshActor* t_actor = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), GetMesh()->GetComponentLocation() + FVector(0.f, 0.f, 10.f) + GetActorRightVector() * 50.f, GetMesh()->GetComponentRotation() + FRotator(40.f, -20.f, 90.f));
+		if (t_actor) {
+			t_actor->SetMobility(EComponentMobility::Movable);
+			UStaticMeshComponent* MeshComponent = t_actor->GetStaticMeshComponent();
+			if (MeshComponent)
+			{
+				MeshComponent->SetStaticMesh(spawnOnDeath);
+			}
+			t_actor->SetLifeSpan(300.f);
+		}
+	}
 	Ulib::Destroy(this);
 }
 bool AeveCharacter::IsDead()

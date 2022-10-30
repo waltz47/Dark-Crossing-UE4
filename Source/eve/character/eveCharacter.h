@@ -30,6 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float armor = 5.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float visionRange = 2000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float visionDeg = 60.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) UStaticMesh* spawnOnDeath = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) FResource res;
 
