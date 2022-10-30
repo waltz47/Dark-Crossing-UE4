@@ -35,6 +35,13 @@ public:
 	int32															m_clipAmmo = 0;
 	float															m_reloadTime = 1.5f;
 
+	// List of muzzle sound cues
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	TArray<USoundCue*> MuzzleSoundCues;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MuzzleSoundMultiplier = 1.0f;
+
 	Aweapon();
 	virtual void ShootAt(AActor* actor);
 	virtual void Shoot();
@@ -43,7 +50,7 @@ public:
 	virtual void Reload();
 	virtual bool IsReloading();
 	void MuzzleEffect();
-	void MuzzleSound(float t_s = 1.f);
+	void MuzzleSound();
 	
 
 	FTimerHandle reloadTimer;

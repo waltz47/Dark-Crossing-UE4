@@ -45,7 +45,7 @@ void Aweapon::ShootAt(AActor* actor)
 	}
 	m_clipAmmo--;
 	MuzzleEffect();
-	MuzzleSound(0.2f);
+	MuzzleSound();
 	if ((FMath::RandRange(0, 100) % 2) == 0) {
 		UGameplayStatics::ApplyDamage(actor, damage, m_owner->GetController(), m_owner, UDamageType::StaticClass());
 		FHitResult hit;
@@ -146,9 +146,8 @@ void Aweapon::MuzzleEffect()
 		UGameplayStatics::SpawnEmitterAttached(muzzleFlash, gunMesh, MUZZLE_NAME, location, rotation, EAttachLocation::KeepWorldPosition);
 	}
 }
-void Aweapon::MuzzleSound(float t_s)
+void Aweapon::MuzzleSound()
 {
-	if (fireSound) {
-		UGameplayStatics::PlaySoundAtLocation(this, fireSound, GetActorLocation(), GetActorRotation(), t_s);
-	}
+	// Play shoot sound
+	UGameplayStatics::PlaySoundAtLocation(this, MuzzleSoundCues[FMath::RandRange(0, MuzzleSoundCues.Num() - 1)], GetActorLocation(), MuzzleSoundMultiplier);	
 }
