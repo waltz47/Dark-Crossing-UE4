@@ -25,6 +25,9 @@ void AevePed::BeginPlay()
 	else {
 		SetPedState(PED_STATE_GROUPED);
 	}
+	if (Ulib::Valid(m_weapPrimary)) {
+		m_weapPrimary->MuzzleSoundMultiplier = 0.3f;
+	}
 }
 void AevePed::Tick(float DeltaTime)
 {
