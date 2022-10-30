@@ -154,7 +154,8 @@ void Aweapon::MuzzleSound()
 		const auto MuzzleSoundCue = MuzzleSoundCues[FMath::RandRange(0, MuzzleSoundCues.Num() - 1)];
 		if (IsValid(MuzzleSoundCue))
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, MuzzleSoundCue, GetActorLocation(), MuzzleSoundMultiplier);
+			// Make concurrency sound settings for ths sound cue that is limited to owner
+			UGameplayStatics::PlaySoundAtLocation(this, MuzzleSoundCue, GetActorLocation(), MuzzleSoundMultiplier, 1, 0, nullptr, MuzzleSoundConcurrency);
 		}
 	}
 }

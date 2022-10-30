@@ -42,6 +42,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MuzzleSoundMultiplier = 1.0f;
 
+	// Sound concurrency settings for the muzzle sound
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	USoundConcurrency* MuzzleSoundConcurrency;
+
 	Aweapon();
 	virtual void ShootAt(AActor* actor);
 	virtual void Shoot();
