@@ -264,7 +264,7 @@ float AevePlayer::TakeDamage(float _damage, const struct FDamageEvent& damageEve
 
 	// Play a random take damage sound cue
 	if (TakeDamageSoundCues.Num() > 0) {
-		UGameplayStatics::PlaySound2D(this, TakeDamageSoundCues[FMath::RandRange(0, TakeDamageSoundCues.Num() - 1)]);
+		UGameplayStatics::PlaySoundAtLocation(this, TakeDamageSoundCues[FMath::RandRange(0, TakeDamageSoundCues.Num() - 1)], GetActorLocation(), 1, 1, 0, nullptr, TakeDamageSoundConcurrency);
 	}
 	
 	return _damage;

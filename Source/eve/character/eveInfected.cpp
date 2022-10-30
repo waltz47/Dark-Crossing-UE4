@@ -187,7 +187,7 @@ float AeveInfected::TakeDamage(float _damage, const struct FDamageEvent& damageE
 
 	// Play a random take damage sound cue
 	if (TakeDamageSoundCues.Num() > 0 && lastDamageSoundCooldown <= 0) {
-		UGameplayStatics::PlaySoundAtLocation(this, TakeDamageSoundCues[FMath::RandRange(0, TakeDamageSoundCues.Num() - 1)], GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, TakeDamageSoundCues[FMath::RandRange(0, TakeDamageSoundCues.Num() - 1)], GetActorLocation(), TakeDamageSoundVolumeMultiplier, 1, 0, nullptr, TakeDamageSoundConcurrency);
 
 		// reset the time since last damage sound counter
 		lastDamageSoundCooldown = MinTimeSinceLastDamageSound;
@@ -203,7 +203,7 @@ void AeveInfected::OnDeath()
 
 	// Play a random death sound cue
 	if (DeathSoundCues.Num() > 0) {
-		UGameplayStatics::PlaySoundAtLocation(this, DeathSoundCues[FMath::RandRange(0, DeathSoundCues.Num() - 1)], GetActorLocation(), TakeDamageSoundVolumeMultiplier);
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSoundCues[FMath::RandRange(0, DeathSoundCues.Num() - 1)], GetActorLocation());
 	}
 	
 	Super::OnDeath();
