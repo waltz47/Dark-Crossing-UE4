@@ -85,7 +85,7 @@ void Aaidirector::SpawnAI()
 	int32 tp = spawnPoints.Num();
 	if (Ulib::Valid(m_player)) {
 		float t_dst = FVector::Distance(m_player->GetActorLocation(), GetActorLocation() + spawnPoints[m_top]);
-		while (t_dst <= 3000.f && tp-- && Ulib::Valid(m_player)) {
+		while (t_dst <= 5000.f && tp-- && Ulib::Valid(m_player)) {
 			m_top++;
 			m_top %= spawnPoints.Num();
 			t_dst = FVector::Distance(m_player->GetActorLocation(), GetActorLocation() + spawnPoints[m_top]);
