@@ -241,9 +241,24 @@ bool AevePlayer::NewAlly()
 }
 bool AevePlayer::BuyMediPack()
 {
+	// Can't afford it
 	if (!EnoughGold(medipackCost))
+	{
+		// Didn't heal
 		return false;
+	}
+
+	// Already full health
+	if (health >= 100.f)
+	{
+		// Didn't heal
+		return false;
+	}
+
+	// Health
 	health = 100.f;
+
+	// We healed
 	return true;
 }
 
