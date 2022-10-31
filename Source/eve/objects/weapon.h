@@ -6,6 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "weapon.generated.h"
 
+enum class EShotResult
+{
+	Shot,
+	NoAmmo,
+	AlreadyReloading,
+	StartedReloading,
+	Error
+};
+
 class AeveCharacter;
 #define MUZZLE_NAME		FName("weapon_muzzle")
 #define GUN_RANGE		50000.f
@@ -46,15 +55,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
 	USoundConcurrency* MuzzleSoundConcurrency;
 
+	
+
 	Aweapon();
 	virtual void ShootAt(AActor* actor);
-	virtual void Shoot();
+	virtual EShotResult Shoot();
 	virtual void StartReload();
 	virtual void StopReload();
 	virtual void Reload();
 	virtual bool IsReloading();
 	void MuzzleEffect();
 	void MuzzleSound();
+	int GetTotalAmmo() const;
+	bool OutOfAmmo() const;
 	
 
 	FTimerHandle reloadTimer;

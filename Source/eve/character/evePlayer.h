@@ -55,6 +55,7 @@ private:
 	USoundConcurrency* TakeDamageSoundConcurrency;
 
 
+
 protected:
 	virtual void BeginPlay() override;
 	bool HasLowHealthForHeartbeatSound() const;
@@ -70,7 +71,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 allyCost = 50;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSubclassOf<Aturret_ai_base> turretClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) TArray<TSubclassOf<AeveNICharacter>> allyClass;
-
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

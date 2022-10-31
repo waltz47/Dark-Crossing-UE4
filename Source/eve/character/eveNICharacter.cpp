@@ -6,6 +6,8 @@
 #include "components/spotlightcomponent.h"
 #include "lib.h"
 #include "objects/weapon.h"
+#include "kismet/gameplaystatics.h"
+#include "sound/soundcue.h"
 
 AeveNICharacter::AeveNICharacter()
 {
@@ -39,7 +41,16 @@ void AeveNICharacter::Shoot()
 {
 	if (!Ulib::Valid(m_weapPrimary))
 		return;
-	m_weapPrimary->Shoot();
+
+	// Shoot
+	const auto Result = m_weapPrimary->Shoot();
+
+	// Play no ammo sound if empty
+	if (Result == EShotResult::NoAmmo && bPlayDryFireIfEmpty && OutOfAmmoSoundCue)
+	{
+		// Play out of ammo sound cue
+		UGameplayStatics::PlaySoundAtLocation(this, OutOfAmmoSoundCue, GetActorLocation());
+	}
 }
 void AeveNICharacter::ShootAt(AActor* actor)
 {

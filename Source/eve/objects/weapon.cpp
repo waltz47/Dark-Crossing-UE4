@@ -55,16 +55,22 @@ void Aweapon::ShootAt(AActor* actor)
 		}
 	}
 }
-void Aweapon::Shoot()
+EShotResult Aweapon::Shoot()
 {
-	if (IsReloading())
-		return;
+	// Can't shoot without ammo!
+	if (OutOfAmmo())
+	{
+		return EShotResult::NoAmmo;
+	}
+	
+	if (IsReloading()) 
+		return EShotResult::AlreadyReloading;
 	if (!Ulib::Valid(m_owner))
-		return;
+		return EShotResult::Error;
 	if (m_clipAmmo == 0)
 	{
 		Reload();
-		return;
+		return EShotResult::StartedReloading;
 	}
 	m_clipAmmo--;
 	FVector trace_start = GetActorLocation() + m_owner->GetActorForwardVector() * 10.f;
@@ -102,10 +108,12 @@ void Aweapon::Shoot()
 			}
 		}
 	}
+	
+	//spawn particle effects
 	MuzzleEffect();
 	MuzzleSound();
 	
-	//spawn particle effects;
+	return EShotResult::Shot;
 }
 void Aweapon::Reload()
 {
@@ -128,9 +136,9 @@ void Aweapon::StopReload()
 {
 	if (!Ulib::Valid(m_owner))
 		return;
-	int32 totalAmmo = m_owner->res.ammo + m_clipAmmo;
+	const int32 totalAmmo = GetTotalAmmo();
 	m_clipAmmo = 0;
-	int32 fill = FMath::Min(totalAmmo, clipSize);
+	const int32 fill = FMath::Min(totalAmmo, clipSize);
 	m_clipAmmo = fill;
 	m_owner->res.ammo = totalAmmo - fill;
 }
@@ -158,4 +166,14 @@ void Aweapon::MuzzleSound()
 			UGameplayStatics::PlaySoundAtLocation(this, MuzzleSoundCue, GetActorLocation(), MuzzleSoundMultiplier, 1, 0, nullptr, MuzzleSoundConcurrency);
 		}
 	}
+}
+
+int Aweapon::GetTotalAmmo() const
+{
+	return m_owner->res.ammo + m_clipAmmo;
+}
+
+bool Aweapon::OutOfAmmo() const
+{
+	return GetTotalAmmo() <= 0;
 }

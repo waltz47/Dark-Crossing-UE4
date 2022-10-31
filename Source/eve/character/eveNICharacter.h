@@ -6,6 +6,7 @@
 #include "character/eveCharacter.h"
 #include "eveNICharacter.generated.h"
 
+class USoundCue;
 class USpotLightComponent;
 class Aweapon;
 #define WEAPON_ATTACH_SOCKET		FName("weapon_socket")
@@ -23,8 +24,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) USpotLightComponent* flashLight = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSubclassOf<Aweapon> weaponClass;
 
-
-
 	AeveNICharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void Shoot();
@@ -38,7 +37,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 		int32 GetClipSize();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bPlayDryFireIfEmpty = false;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* FriendlyCharacterMarkerMesh;
+
+	// Out of ammo sound
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	USoundCue* OutOfAmmoSoundCue;
 };
