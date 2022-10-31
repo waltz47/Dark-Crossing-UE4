@@ -65,10 +65,18 @@ void Aaidirector::NextWave()
 	squadToAttack.Empty();
 	
 	GetWorld()->GetTimerManager().SetTimer(t_next_wave_timer, this, &Aaidirector::WaveStart, waveCooldown, false);
+
+	// Play new wave sound cue
+	if (NewWaveSoundCue)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), NewWaveSoundCue);
+	}
 }
 void Aaidirector::WaveStart()
 {
 	squadToAttack = Ulib::GetAllNI(this);
+
+
 
 	GetWorld()->GetTimerManager().SetTimer(m_spawnTimerHandle, this, &Aaidirector::SpawnAI, spawnTimeDiff, true, 0.f);
 	GetWorld()->GetTimerManager().SetTimer(t_eval_timer, this, &Aaidirector::EvalAI, AIEvaluationTime, true, 0.f);

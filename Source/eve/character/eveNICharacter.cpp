@@ -12,6 +12,10 @@ AeveNICharacter::AeveNICharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	flashLight = CreateDefaultSubobject<USpotLightComponent>("Flash Light Comp");
 	flashLight->SetupAttachment(GetRootComponent());
+
+	// Add FriendlyCharacterMarkerMesh to the hierarchy under root component
+	FriendlyCharacterMarkerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FriendlyCharacterMarkerMesh"));
+	FriendlyCharacterMarkerMesh->SetupAttachment(RootComponent);
 }
 void AeveNICharacter::BeginPlay()
 {
@@ -24,9 +28,8 @@ void AeveNICharacter::BeginPlay()
 		m_weapPrimary->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WEAPON_ATTACH_SOCKET);
 		//m_weapPrimary->SetActorLocation(GetMesh()->GetComponentLocation());
 	}
-
-	
 }
+
 void AeveNICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

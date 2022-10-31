@@ -6,6 +6,7 @@
 #include "character/eveNICharacter.h"
 #include "evePed.generated.h"
 
+class USoundCue;
 class AevePlayer;
 class AeveInfected;
 class Aweapon;
@@ -32,8 +33,14 @@ private:
 	float											m_lookWaitTolerance = 4.f;
 	void SetPedState(PedState t_newState);
 
+	// Death sound
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	USoundCue* DeathSoundCue;
+
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnDeath() override;
+	
 public:
 	AevePed();
 	bool		IsCurrentTargetValid();

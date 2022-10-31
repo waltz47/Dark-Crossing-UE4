@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "aidirector.generated.h"
 
+class USoundCue;
 class ACharacter;
 class AeveInfected;
 class AeveCharacter;
@@ -33,6 +34,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	int32					numInfected = 40;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	int32					waveCooldown = 10;
@@ -50,6 +53,8 @@ public:
 
 	UPROPERTY() TArray<AeveCharacter*>	squadToAttack;
 	UPROPERTY()	TArray<AeveInfected*>	m_infected;
+	
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) EGameDifficulty			DifficultySetting = EGameDifficulty::LEVEL_MEDIUM;
 
@@ -105,4 +110,7 @@ public:
 	}
 
 
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound, meta=(AllowPrivateAccess = "true"))
+	USoundCue* NewWaveSoundCue;
 };

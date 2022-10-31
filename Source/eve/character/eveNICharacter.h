@@ -23,6 +23,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) USpotLightComponent* flashLight = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSubclassOf<Aweapon> weaponClass;
 
+
+
 	AeveNICharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void Shoot();
@@ -36,7 +38,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		int32 GetClipSize();
 
-
-
-
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UStaticMeshComponent* FriendlyCharacterMarkerMesh;
 };

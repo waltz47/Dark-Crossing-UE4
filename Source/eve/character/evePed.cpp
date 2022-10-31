@@ -9,6 +9,8 @@
 #include "particles/particlesystem.h"
 #include "objects/weapon.h"
 #include "character/evecharacter.h"
+#include "sound/soundcue.h"
+
 AevePed::AevePed()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -29,6 +31,15 @@ void AevePed::BeginPlay()
 		m_weapPrimary->MuzzleSoundMultiplier = 0.3f;
 	}
 }
+
+void AevePed::OnDeath()
+{
+	Super::OnDeath();
+
+	// Play death sound cue
+	UGameplayStatics::PlaySound2D(GetWorld(), DeathSoundCue);
+}
+
 void AevePed::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
