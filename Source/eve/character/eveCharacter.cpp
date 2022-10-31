@@ -98,7 +98,8 @@ void AeveCharacter::DestroyObject()
 			{
 				MeshComponent->SetStaticMesh(spawnOnDeath);
 			}
-			t_actor->SetLifeSpan(300.f);
+			t_actor->SetLifeSpan(200.f);
+			t_actor->SetActorTickEnabled(false);
 		}
 	}
 	Ulib::Destroy(this);

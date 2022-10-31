@@ -180,6 +180,8 @@ void AevePlayer::SetPlacingObject(Aturret_ai_base* t_obj)
 }
 bool AevePlayer::BuyTurret()
 {
+	if (Ulib::Valid(m_placingObj))
+		return false;
 	if (!turretClass)
 		return false;
 	if (!EnoughGold(turretCost))

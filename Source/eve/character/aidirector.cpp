@@ -38,8 +38,8 @@ void Aaidirector::NextWave()
 		m_player->AddGold(numInfected * KILL_MULTIPLIER);
 	}
 	/*Increase health / armor*/
-	m_currentWaveHealth += (5.f * GetDifficultyFactor());
-	m_currentWaveArmor += (2.f * GetDifficultyFactor());
+	m_currentWaveHealth += (2.f * GetDifficultyFactor());
+	m_currentWaveArmor += (5.f * GetDifficultyFactor());
 	if (m_currentWaveArmor > INF_ARMOR_CAP) {
 		m_currentWaveArmor = INF_ARMOR_CAP;
 	}
@@ -49,7 +49,7 @@ void Aaidirector::NextWave()
 	}
 
 	squadToAttack = Ulib::GetAllNI(this);
-	numInfected += (10 * (int32)GetDifficultyFactor());
+	numInfected += (int32)(10.f * GetDifficultyFactor());
 	maxSimActive += 10;
 	if (maxSimActive > INF_MAX_SIM_ACTIVE_CAP) {
 		maxSimActive = INF_MAX_SIM_ACTIVE_CAP;
