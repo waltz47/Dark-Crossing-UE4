@@ -199,21 +199,27 @@ bool AevePlayer::BuyTurret()
 }
 bool AevePlayer::BuyAmmo()
 {
-	if (EnoughGold(ammoCost)) {
-		res.ammo += 200;
-	}
-	else {
+	// Can't afford it
+	if (!EnoughGold(ammoCost)) {
 		return false;
 	}
+
+	// Add ammo
+	res.ammo += 200;
+
+	// Could afford it
 	return true;
 }
 bool AevePlayer::NewAlly()
 {
 	if (allyClass.Num() == 0)
 		return false;
+
+	// Can't afford it
 	if (!EnoughGold(allyCost)) {
 		return false;
 	}
+	
 	FActorSpawnParameters t_spawnParams;
 	t_spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	FNavLocation t_nav;
@@ -237,6 +243,8 @@ bool AevePlayer::NewAlly()
 		UE_LOG(LogTemp, Warning, TEXT("eve player ally null spawn"));
 		return false;
 	}
+
+	// Bought it
 	return true;
 }
 bool AevePlayer::BuyMediPack()
